@@ -9,7 +9,8 @@ router.route('/')
 
 router.route('/:recipeNameId')
   .get(recipeController.get)
-  .put(recipeController.update)
-  .delete(recipeController.delete);
+
+// router.route('/scrape/:mainIngredient?/:cuisine?/:season?')
+//   .get(recipeController.list)
 
 module.exports = router;

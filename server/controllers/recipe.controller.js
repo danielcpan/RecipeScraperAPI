@@ -31,8 +31,13 @@ module.exports = {
   },
   list: async (req, res, next) => {
     try {
-      const recipes = await scrapeCookbook('Shellfish/all/Fall');
-      // const recipes = await Recipe.find({});
+      // console.log("got here")
+      // console.log("req.params.mainIngredient: " + req.params.mainIngredient)
+      // console.log("req.params.cuisine: " + req.params.cuisine)
+      // console.log("req.params.season: " + req.params.season)
+      // const recipes = await scrapeCookbook('Shellfish/all/Fall');
+      // const recipes = {}
+      const recipes = await Recipe.find({});
 
 
       return res.json(recipes)
@@ -44,27 +49,6 @@ module.exports = {
     try {
 
       return res.send("TODO: CREATE");
-    } catch (err) {
-      return next(err);
-    }
-  },
-  update: async (req, res, next) => {
-    try {
-      return res.send("TODO: CREATE");
-    } catch (err) {
-      return next(err);
-    }
-  },
-  delete: async (req, res, next) => {
-    try {
-      return res.send("TODO: CREATE");
-    } catch (err) {
-      return next(err);
-    }
-  },
-  getAnalytics: async (req, res, next) => {
-    try {
-      return res.send("TODO");
     } catch (err) {
       return next(err);
     }

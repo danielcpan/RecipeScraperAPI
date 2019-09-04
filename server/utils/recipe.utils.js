@@ -16,7 +16,7 @@ module.exports = {
       source.cancel();
       console.log("safety cancel")
     }, 10000);
-    const result = await axios.get(`${RECIPE_URL}/${endpoint}`, { cancelToken: source.token});
+    const result = await axios.get(`${RECIPE_URL}/${endpoint}`, { cancelToken: source.token });
 
     // console.log(result.data)
     
@@ -95,20 +95,21 @@ module.exports = {
     }
   },
   scrapeCookbook: async filters => {
-    try {
-      console.log("here")
-      const $ = await module.exports.fetchData(`/cookbook/${filters}`);
-      $('.recipe-thumb a').forEach((idx, el) => {
-        const thumbImage = $(el).find('.recipe-img-link img').attr('src');
+    // try {
+    //   // TODO: scrape cookbook and update existing recipes
+    //   // to include thumbnail, main ingredient, cuisine, season
+    //   console.log("here")
+    //   const $ = await module.exports.fetchData(`/cookbook/${filters}`);
+    //   $('.recipe-thumb a').each((idx, el) => {
+    //     const thumbImage = $(el).find('.recipe-img-link img').attr('src');
+    //   })
 
-        console.log(thumbImage)
+    //   return {
+    //     thumbImage: thumbImage
+    //   }
 
-      })
-      // console.log($)
-
-    } catch (err) {
-      return err
-    }
+    // } catch (err) {
+    //   return err
+    // }
   }
-  // list: async
 }
