@@ -7,6 +7,12 @@ const RecipeSchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
+  author: {
+    type: String,
+  },
+  category: {
+    type: String,
+  },
   titleMain: {
     type: String,
     required: true,
@@ -17,25 +23,26 @@ const RecipeSchema = new mongoose.Schema({
   },
   cookTimeMins: {
     type: Number,
-    // required: true,
   },
   servings: {
     type: Number,
-    // required: true,
   },
   calories: {
     type: Number,
-    // required: true,
   },
   description: {
     type: String,
     required: true,
   },
-  mainImage: {
+  thumbnailUrl: {
+    type: String,
+    required: true,
+  },  
+  mainImageUrl: {
     type: String,
     required: true,
   },
-  ingredientsImage: {
+  ingredientsImageUrl: {
     type: String,
     required: true,
   },
@@ -44,6 +51,14 @@ const RecipeSchema = new mongoose.Schema({
     required: true,
   }],
   instructions: [InstructionSchema],
+  ratingCount: {
+    type: Number,
+    default: 0
+  },
+  ratingValue: {
+    type: Number,
+    default: 5
+  }
 }, {
   timestamps: true,
 });

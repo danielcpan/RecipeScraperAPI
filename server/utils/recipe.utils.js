@@ -5,6 +5,7 @@ const axios = require("axios");
 
 const { RECIPE_URL } = require('../config/config');
 const APIError = require('../utils/APIError.utils');
+const recipeLinks = require('../assets/recipeLinks.txt');
 
 module.exports = {
   fetchData: async endpoint => {
@@ -32,18 +33,27 @@ module.exports = {
 
       const recipe = {
         nameId: recipeNameId,
+        author: '',
+        category: '',
+        cuisine: '',
         titleMain: '',
         titleSub: '',
         cookTimeMins: '',
         servings: '',
         calories: '',
         description: '',
-        mainImage: '',
-        ingredientsImage: '',
+        thumbnailUrl: '',
+        mainImageUrl: '',
+        ingredientsImageUrl: '',
         ingredients: new Set(),
-        instructions: []
+        instructions: [],
+        ratingCount: 0,
+        ratingValue: 0,
       }
-  
+
+      recipe.author = $('meta[itemprop=author]').attr('content');
+      recipe.category = $('meta[itemprop=recipeCategory]').attr('content');
+      recipe.cuisine = $('meta[itemprop=recipeCuisine]').attr('content');
       recipe.titleMain = $('.ba-recipe-title__main').text().trim();
       recipe.titleSub = $('.ba-recipe-title__sub').text().trim();
   
@@ -60,10 +70,11 @@ module.exports = {
           recipe[key] = val[0]; 
         }
       })
-  
-      recipe.description = $('.recipe-main__description p').text().trim();
-      recipe.mainImage = $('.ba-hero-image__hldr img').attr('src');
-      recipe.ingredientsImage = $('.ba-feature-image__hldr img').attr('src');
+
+      recipe.description = $('meta[name=description]').attr('content');
+      recipe.thumbnailUrl = $("meta[itemprop='image thumbnailUrl']").attr('content');
+      recipe.mainImageUrl = $('.ba-hero-image__hldr img').attr('src');
+      recipe.ingredientsImageUrl = $('.ba-feature-image__hldr img').attr('src');
   
       $('.section-recipe .step .col-md-6').each((idx, el) => {
         const instruction = {
@@ -85,6 +96,9 @@ module.exports = {
         const ingredient = $(el).text().trim().replace(/\s\s+/g, ' ');
         recipe.ingredients.add(ingredient);
       });
+
+      recipe.ratingCount = $('meta[itemprop=ratingCount]').attr('content');
+      recipe.ratingValue = $('meta[itemprop=ratingValue]').attr('content');
   
       return {
         ...recipe,
@@ -94,7 +108,7 @@ module.exports = {
       return err;
     }
   },
-  scrapeCookbook: async filters => {
+  scrapeCookbook: async () => {
     // try {
     //   // TODO: scrape cookbook and update existing recipes
     //   // to include thumbnail, main ingredient, cuisine, season
