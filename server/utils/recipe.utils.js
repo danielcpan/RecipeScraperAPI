@@ -2,34 +2,39 @@ const httpStatus = require('http-status');
 // const mongoose = require('mongoose');
 const cheerio = require("cheerio");
 const axios = require("axios");
+const readline = require('readline');
+const fs = require('fs');
+
 
 const { RECIPE_URL } = require('../config/config');
 const APIError = require('../utils/APIError.utils');
-const recipeLinks = require('../assets/recipeLinks.txt');
+const BlueApronRecipeLinks = require('../assets/BlueApronRecipeLinks.txt');
 
 module.exports = {
   fetchData: async endpoint => {
-    console.log("attempting to fetch")
-    console.log(`${RECIPE_URL}/${endpoint}`)
-
-    let source = axios.CancelToken.source();
-    setTimeout(() => {
-      source.cancel();
-      console.log("safety cancel")
-    }, 10000);
-    const result = await axios.get(`${RECIPE_URL}/${endpoint}`, { cancelToken: source.token });
-
-    // console.log(result.data)
-    
-    return cheerio.load(result.data, {
-      xml: {
-        normalizeWhitespace: true,
-      }
-    });
+    try {
+      console.log("attempting to fetch")
+      console.log(`${RECIPE_URL}/${endpoint}`)
+  
+      let source = axios.CancelToken.source();
+      setTimeout(() => {
+        source.cancel();
+        console.log("safety cancel")
+      }, 100000);
+      const result = await axios.get(`${RECIPE_URL}/${endpoint}`, { cancelToken: source.token });
+      
+      return cheerio.load(result.data, {
+        xml: {
+          normalizeWhitespace: true,
+        }
+      });
+    } catch (err) {
+      console.log("err")
+    }
   },
   scrapeRecipe: async recipeNameId => {
     try {
-      const $ = await module.exports.fetchData(`/recipes/${recipeNameId}`);
+      const $ = await module.exports.fetchData(`recipes/${recipeNameId}`);
 
       const recipe = {
         nameId: recipeNameId,
@@ -105,25 +110,26 @@ module.exports = {
         ingredients: [...recipe.ingredients]
       }
     } catch (err) {
+      console.log("hey")
       return err;
     }
   },
   scrapeCookbook: async () => {
-    // try {
-    //   // TODO: scrape cookbook and update existing recipes
-    //   // to include thumbnail, main ingredient, cuisine, season
-    //   console.log("here")
-    //   const $ = await module.exports.fetchData(`/cookbook/${filters}`);
-    //   $('.recipe-thumb a').each((idx, el) => {
-    //     const thumbImage = $(el).find('.recipe-img-link img').attr('src');
-    //   })
+    try {
+      const path = require('path').resolve(__dirname, '../assets/BlueApronRecipeLinks.txt')
+      const readInterface = readline.createInterface({
+        input: fs.createReadStream(path),
+        output: process.stdout,
+        console: false
+      });
 
-    //   return {
-    //     thumbImage: thumbImage
-    //   }
-
-    // } catch (err) {
-    //   return err
-    // }
+      for await (let line of readInterface) {
+        line = line.replace(/['"]+/g, '')
+        await axios.get(`http://localhost:5000/api/recipes/${line}`);
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
 }

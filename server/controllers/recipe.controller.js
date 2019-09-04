@@ -11,6 +11,7 @@ module.exports = {
       
       // If not found, scrape and save
       if (!recipe) {
+        console.log(req.params.recipeNameId)
         recipe = await scrapeRecipe(req.params.recipeNameId);
         newRecipe = new Recipe(recipe);
         await newRecipe.save();
