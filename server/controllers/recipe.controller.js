@@ -6,26 +6,22 @@ const httpStatus = require('http-status');
 // const {
 //   decimalToBaseN, withHttp, withoutWWW, getNextSequence,
 // } = require('../utils/mongoose.utils');
-// const Link = require('../models/link.model');
+const Recipe = require('../models/recipe.model');
 // const Visit = require('../models/visit.model');
 const APIError = require('../utils/APIError.utils');
-const { scrapeRecipe } = require('../utils/recipe.utils');
+const { scrapeRecipe, scrapeCookbook } = require('../utils/recipe.utils');
 // const { PUBLIC_URL, RECIPE_URL } = require('../config/config');
 
 module.exports = {
   get: async (req, res, next) => {
     try {
-      let recipe;
-
-      // const link = await Link.findOne({ _id: req.params.linkId }).populate('visits');
-
-      // Scrape if not found
-      recipe = await scrapeRecipe(req.params.recipeNameId);
-
-
-
+      let recipe = await Recipe.findOne({ nameId: req.params.recipeNameId});
+      
+      // If not found, scrape and save
       if (!recipe) {
-        return next(new APIError('Recipe not found', httpStatus.NOT_FOUND));
+        recipe = await scrapeRecipe(req.params.recipeNameId);
+        newRecipe = new Recipe(recipe);
+        await newRecipe.save();
       }
 
       return res.json(recipe)
@@ -35,10 +31,11 @@ module.exports = {
   },
   list: async (req, res, next) => {
     try {
+      const recipes = await scrapeCookbook('Shellfish/all/Fall');
+      // const recipes = await Recipe.find({});
 
-      // const recipe = await get('https://www.blueapron.com/recipes/sheet-pan-bbq-pork-with-roasted-vegetables-maple-mustard-sauce-4');
 
-      return res.json(recipe)
+      return res.json(recipes)
     } catch (err) {
       return next(err);
     }
@@ -46,21 +43,21 @@ module.exports = {
   create: async (req, res, next) => {
     try {
 
-      return res.send("TODO");
+      return res.send("TODO: CREATE");
     } catch (err) {
       return next(err);
     }
   },
   update: async (req, res, next) => {
     try {
-      return res.send("TODO");
+      return res.send("TODO: CREATE");
     } catch (err) {
       return next(err);
     }
   },
   delete: async (req, res, next) => {
     try {
-      return res.send("TODO");
+      return res.send("TODO: CREATE");
     } catch (err) {
       return next(err);
     }

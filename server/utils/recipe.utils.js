@@ -1,14 +1,24 @@
-// const httpStatus = require('http-status');
+const httpStatus = require('http-status');
 // const mongoose = require('mongoose');
 const cheerio = require("cheerio");
 const axios = require("axios");
 
 const { RECIPE_URL } = require('../config/config');
-// const APIError = require('../utils/APIError.utils');
+const APIError = require('../utils/APIError.utils');
 
 module.exports = {
   fetchData: async endpoint => {
-    const result = await axios.get(`${RECIPE_URL}/${endpoint}`);
+    console.log("attempting to fetch")
+    console.log(`${RECIPE_URL}/${endpoint}`)
+
+    let source = axios.CancelToken.source();
+    setTimeout(() => {
+      source.cancel();
+      console.log("safety cancel")
+    }, 10000);
+    const result = await axios.get(`${RECIPE_URL}/${endpoint}`, { cancelToken: source.token});
+
+    // console.log(result.data)
     
     return cheerio.load(result.data, {
       xml: {
@@ -18,15 +28,15 @@ module.exports = {
   },
   scrapeRecipe: async recipeNameId => {
     try {
-      const $ = await module.exports.fetchData(recipeNameId);
+      const $ = await module.exports.fetchData(`/recipes/${recipeNameId}`);
 
       const recipe = {
         nameId: recipeNameId,
         titleMain: '',
         titleSub: '',
-        time: '',
+        cookTimeMins: '',
         servings: '',
-        nutrition: '',
+        calories: '',
         description: '',
         mainImage: '',
         ingredientsImage: '',
@@ -37,14 +47,18 @@ module.exports = {
       recipe.titleMain = $('.ba-recipe-title__main').text().trim();
       recipe.titleSub = $('.ba-recipe-title__sub').text().trim();
   
-      $('.ba-info-list__item-value').each((idx, el) => {
-        const val = $(el).text().trim().replace(/\s\s+/g, ' ');
+      $('.ba-info-list__item').each((idx, el) => {
         let key = ''
-        if (idx === 0) key = 'time'
-        else if (idx === 1) key = 'servings'
-        else if (idx === 2) key = 'nutrition'
-  
-        recipe[key] = val;
+        const val = $(el).find('.ba-info-list__item-value').text().match(/\d+/g);
+        const lookUp = $(el).find('.ba-info-list__item-name').text().trim()
+
+        if (lookUp === 'Time') key = 'cookTimeMins' 
+        else if (lookUp === 'Servings') key = 'servings'
+        else if (lookUp === 'Nutrition') key = 'calories'
+        
+        if (key && val) {
+          recipe[key] = val[0]; 
+        }
       })
   
       recipe.description = $('.recipe-main__description p').text().trim();
@@ -80,8 +94,21 @@ module.exports = {
       return err;
     }
   },
-  scrapeCookbook: async siteUrl => {
+  scrapeCookbook: async filters => {
+    try {
+      console.log("here")
+      const $ = await module.exports.fetchData(`/cookbook/${filters}`);
+      $('.recipe-thumb a').forEach((idx, el) => {
+        const thumbImage = $(el).find('.recipe-img-link img').attr('src');
 
+        console.log(thumbImage)
+
+      })
+      // console.log($)
+
+    } catch (err) {
+      return err
+    }
   }
   // list: async
 }
