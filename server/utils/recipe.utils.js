@@ -1,36 +1,29 @@
-const httpStatus = require('http-status');
-// const mongoose = require('mongoose');
 const cheerio = require("cheerio");
 const axios = require("axios");
 const readline = require('readline');
 const fs = require('fs');
 
-
 const { RECIPE_URL } = require('../config/config');
-const APIError = require('../utils/APIError.utils');
-const BlueApronRecipeLinks = require('../assets/BlueApronRecipeLinks.txt');
+// const APIError = require('../utils/APIError.utils');
+// const BlueApronRecipeLinks = require('../assets/BlueApronRecipeLinks.txt');
 
 module.exports = {
   fetchData: async endpoint => {
-    try {
-      console.log("attempting to fetch")
-      console.log(`${RECIPE_URL}/${endpoint}`)
-  
-      let source = axios.CancelToken.source();
-      setTimeout(() => {
-        source.cancel();
-        console.log("safety cancel")
-      }, 100000);
-      const result = await axios.get(`${RECIPE_URL}/${endpoint}`, { cancelToken: source.token });
-      
-      return cheerio.load(result.data, {
-        xml: {
-          normalizeWhitespace: true,
-        }
-      });
-    } catch (err) {
-      console.log("err")
-    }
+    console.log("attempting to fetch")
+    console.log(`${RECIPE_URL}/${endpoint}`)
+
+    let source = axios.CancelToken.source();
+    setTimeout(() => {
+      source.cancel();
+      console.log("safety cancel")
+    }, 100000);
+    const result = await axios.get(`${RECIPE_URL}/${endpoint}`, { cancelToken: source.token });
+    
+    return cheerio.load(result.data, {
+      xml: {
+        normalizeWhitespace: true,
+      }
+    });
   },
   scrapeRecipe: async recipeNameId => {
     try {

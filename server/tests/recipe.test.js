@@ -35,12 +35,48 @@ describe('## Recipe APIs', () => {
     });
   });
 
-  describe('# GET /api/recipes/analytics/:tinyUrlId', () => {
-    it('should get recipe analytics', async () => {
-      // const response = await request(app).get(`/api/recipes/analytics/${recipe.tinyUrlId}`);
+  describe('# GET /api/recipes/featured', () => {
+    it('should get all featured recipes', async () => {
+      const response = await request(app).get('/api/recipes/featured');
 
-      // expect(response.status).to.equal(httpStatus.OK);
-      // expect(response.body.tinyUrlId).to.equal(recipe.tinyUrlId);
+      expect(response.status).to.equal(httpStatus.OK);
+      // expect(response.body).to.have.lengthOf(1);
+    });
+  });
+
+  describe('# GET /api/recipes/popular', () => {
+    it('should get all popular recipes', async () => {
+      const response = await request(app).get('/api/recipes/popular');
+
+      expect(response.status).to.equal(httpStatus.OK);
+      // expect(response.body).to.have.lengthOf(1);
+    });
+  });
+  
+  describe('# GET /api/recipes/new', () => {
+    it('should get all new recipes', async () => {
+      const response = await request(app).get('/api/recipes/new');
+
+      expect(response.status).to.equal(httpStatus.OK);
+      // expect(response.body).to.have.lengthOf(1);
+    });
+  });
+  
+  describe('# GET /api/recipes/mostLiked', () => {
+    it('should get all most liked recipes', async () => {
+      const response = await request(app).get('/api/recipes/mostLiked');
+
+      expect(response.status).to.equal(httpStatus.OK);
+      // expect(response.body).to.have.lengthOf(1);
+    });
+  });
+  
+  describe('# GET /api/recipes/featured', () => {
+    it('should get all featured recipes', async () => {
+      const response = await request(app).get('/api/recipes/featured');
+
+      expect(response.status).to.equal(httpStatus.OK);
+      // expect(response.body).to.have.lengthOf(1);
     });
   });
 

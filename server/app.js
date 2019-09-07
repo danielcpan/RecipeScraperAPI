@@ -68,6 +68,6 @@ mongoose.connection.on('error', (err) => {
   console.log(err);
 });
 
-scrapeCookbook();
+// scrapeCookbook();
 
 module.exports = app;

@@ -7,6 +7,18 @@ router.route('/')
   .get(recipeController.list)
   .post(recipeController.create);
 
+router.route('/featured')
+  .get(recipeController.listFeatured)
+
+router.route('/popular')
+  .get(recipeController.listPopular)
+  
+router.route('/new')
+  .get(recipeController.listNew)
+
+router.route('/mostLiked')
+  .get(recipeController.listMostLiked)
+
 router.route('/:recipeNameId')
   .get(recipeController.get)
 
