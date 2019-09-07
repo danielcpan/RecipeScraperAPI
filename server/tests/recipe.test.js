@@ -62,9 +62,9 @@ describe('## Recipe APIs', () => {
     });
   });
   
-  describe('# GET /api/recipes/mostLiked', () => {
+  describe('# GET /api/recipes/most-liked', () => {
     it('should get all most liked recipes', async () => {
-      const response = await request(app).get('/api/recipes/mostLiked');
+      const response = await request(app).get('/api/recipes/most-liked');
 
       expect(response.status).to.equal(httpStatus.OK);
       // expect(response.body).to.have.lengthOf(1);

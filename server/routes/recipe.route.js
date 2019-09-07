@@ -16,7 +16,7 @@ router.route('/popular')
 router.route('/new')
   .get(recipeController.listNew)
 
-router.route('/mostLiked')
+router.route('/most-liked')
   .get(recipeController.listMostLiked)
 
 router.route('/:recipeNameId')
