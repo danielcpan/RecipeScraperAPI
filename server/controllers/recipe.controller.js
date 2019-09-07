@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 
 const Recipe = require('../models/recipe.model');
 const APIError = require('../utils/APIError.utils');
-const { scrapeRecipe, scrapeCookbook } = require('../utils/recipe.utils');
+// const { scrapeRecipe, scrapeCookbook } = require('../utils/recipe.utils');
 
 module.exports = {
   get: async (req, res, next) => {

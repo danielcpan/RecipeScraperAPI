@@ -70,6 +70,7 @@ const RecipeSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+// Consider this for optimzations where comptued rating is not needed
 // RecipeSchema.statics.list = function(finding, skipping, limiting, sorting) {
 //   const defaultFind = { ratingCount: { $gte: 1000}}
 //   const defaultSelect = [
@@ -115,7 +116,7 @@ RecipeSchema.statics.list = async function(matching, skipping, limiting, sorting
     { $match: { ...matching }},
     { $project: { ...defaultProject, ratingScore: { $multiply: ['$ratingCount', '$ratingValue']} }},
     { $skip: skipping || 0 },
-    { $limit: limiting || 100 },
+    { $limit: limiting || 15 },
     { $sort: { ...sorting, ratingScore: -1 }}
   ])
 
