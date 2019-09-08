@@ -4,7 +4,7 @@ const InstructionSchema = require('./instruction.model');
 const RecipeSchema = new mongoose.Schema({
   nameId: {
     type: String,
-    unique: true,
+    // unique: true,
     required: true,
   },
   author: {
@@ -115,9 +115,9 @@ RecipeSchema.statics.list = async function(matching, skipping, limiting, sorting
   const recipes = await this.aggregate([
     { $match: { ...matching }},
     { $project: { ...defaultProject, ratingScore: { $multiply: ['$ratingCount', '$ratingValue']} }},
-    { $skip: skipping || 0 },
+    { $sort: { ...sorting, ratingScore: -1 }},
     { $limit: limiting || 15 },
-    { $sort: { ...sorting, ratingScore: -1 }}
+    { $skip: skipping || 0 },
   ])
 
   return recipes;

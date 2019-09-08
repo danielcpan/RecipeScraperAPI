@@ -19,7 +19,7 @@ router.route('/new')
 router.route('/most-liked')
   .get(recipeController.listMostLiked)
 
-router.route('/:recipeNameId')
+router.route('/:recipeId')
   .get(recipeController.get)
 
 // router.route('/scrape/:mainIngredient?/:cuisine?/:season?')
