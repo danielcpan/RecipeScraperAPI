@@ -8,7 +8,8 @@ module.exports = {
   get: async (req, res, next) => {
     try {
       let recipe = await Recipe.findOne({ _id: req.params.recipeId})
-        .select(['description', 'ingredientsImageUrl','ingredients', 'instructions']);
+        // .select({ mainImageUrl : 0,  instructions: { _id: 1}});
+        // .select(['description', 'ingredientsImageUrl','ingredients', 'instructions']);
       
       if (!recipe) {
         return next(new APIError('Recipe not found', httpStatus.NOT_FOUND));

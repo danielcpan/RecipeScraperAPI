@@ -104,7 +104,11 @@ RecipeSchema.statics.list = async function(matching, skipping, limiting, sorting
     'cookTimeMins': 1,
     'servings': 1,
     'calories': 1,
+    'description' : 1,
     'thumbnailUrl': 1,
+    'ingredientsImageUrl': 1,
+    'ingredients': 1,
+    'instructions' : 1,
     'ratingCount': 1,
     'ratingValue': 1,
     'cookedCount': 1,
@@ -115,9 +119,12 @@ RecipeSchema.statics.list = async function(matching, skipping, limiting, sorting
   const recipes = await this.aggregate([
     { $match: { ...matching }},
     { $project: { ...defaultProject, ratingScore: { $multiply: ['$ratingCount', '$ratingValue']} }},
+    // { $project: { ratingScore: { $multiply: ['$ratingCount', '$ratingValue']} }},
     { $sort: { ...sorting, ratingScore: -1 }},
     { $limit: limiting || 15 },
     { $skip: skipping || 0 },
+    { $project: { ratingScore: 0 }},
+    // { $group:{ _id: null, ids:{ $push:"$_id" }}}    
   ])
 
   return recipes;
