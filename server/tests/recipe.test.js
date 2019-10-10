@@ -18,8 +18,8 @@ describe('## Recipe APIs', () => {
 
   describe('# GET /api/recipes/:recipeId', () => {
     it('should get recipe details', async () => {
-      const recipeNameId = 'sheet-pan-bbq-pork-with-roasted-vegetables-maple-mustard-sauce-4'
-      const response = await request(app).get(`/api/recipes/${recipeNameId}`);
+      const recipeId = '5d70519173112953ec462688'
+      const response = await request(app).get(`/api/recipes/${recipeId}`);
 
       expect(response.status).to.equal(httpStatus.OK);
       // expect(response.body.originalUrl).to.equal(recipe.originalUrl);
@@ -85,4 +85,13 @@ describe('## Recipe APIs', () => {
       // TODO
     });
   });
+
+  describe('# GET /api/recipes/search', () => {
+    it('should search for recipes', async () => {
+      const query = 'steak'
+      const response = await request(app).get(`/api/recipes/search?${query}`);
+
+      expect(response.status).to.equal(httpStatus.OK);
+    });
+  });  
 });

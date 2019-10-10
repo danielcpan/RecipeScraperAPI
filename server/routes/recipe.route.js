@@ -19,6 +19,9 @@ router.route('/new')
 router.route('/most-liked')
   .get(recipeController.listMostLiked)
 
+router.route('/search')
+  .get(recipeController.search)  
+
 router.route('/:recipeId')
   .get(recipeController.get)
 

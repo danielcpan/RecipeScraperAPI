@@ -101,4 +101,34 @@ module.exports = {
       return next(err);
     }
   },
+  search: async (req, res, next) => {
+    const { val } = req.query;
+    const defaultSelect = [
+      'author', 
+      'titleMain', 
+      'titleSub', 
+      'thumbnailUrl', 
+    ]    
+
+    try {
+      const recipes = await Recipe.find({
+        $or: [
+          { 'nameId' : { $regex: val, $options: 'i'} },
+          { 'author' : { $regex: val, $options: 'i'} },
+        ]
+      })
+      .select(defaultSelect)
+      .limit(10)
+      // search by:
+        // nameId
+        // author
+        // category
+        // mainIngredient
+        // isVegetarian
+
+      return res.json(recipes)
+    } catch (err) {
+      return next(err);
+    }
+  }
 };
