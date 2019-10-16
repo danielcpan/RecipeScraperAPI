@@ -113,8 +113,8 @@ module.exports = {
     try {
       const recipes = await Recipe.find({
         $or: [
-          { 'nameId' : { $regex: val, $options: 'i'} },
-          { 'author' : { $regex: val, $options: 'i'} },
+          { 'nameId': { $regex: val, $options: 'i' }},
+          { 'author': { $regex: val, $options: 'i' }},
         ]
       })
       .select(defaultSelect)

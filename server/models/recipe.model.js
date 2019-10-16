@@ -121,8 +121,8 @@ RecipeSchema.statics.list = async function(matching, skipping, limiting, sorting
     { $project: { ...defaultProject, ratingScore: { $multiply: ['$ratingCount', '$ratingValue']} }},
     // { $project: { ratingScore: { $multiply: ['$ratingCount', '$ratingValue']} }},
     { $sort: { ...sorting, ratingScore: -1 }},
-    { $limit: limiting || 15 },
     { $skip: skipping || 0 },
+    { $limit: limiting || 15 },
     { $project: { ratingScore: 0 }},
     // { $group:{ _id: null, ids:{ $push:"$_id" }}}    
   ])
