@@ -37,7 +37,7 @@ const RecipeSchema = new mongoose.Schema({
   thumbnailUrl: {
     type: String,
     required: true,
-  },  
+  },
   mainImageUrl: {
     type: String,
     required: true,
@@ -47,20 +47,20 @@ const RecipeSchema = new mongoose.Schema({
   },
   ratingCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   ratingValue: {
     type: Number,
-    default: 5
+    default: 5,
   },
   isFeatured: {
     type: Boolean,
-    default: false
+    default: false,
   },
   cookedCount: {
     type: Number,
-    default: 0
-  },  
+    default: 0,
+  },
   ingredients: [{
     type: String,
     required: true,
@@ -74,14 +74,14 @@ const RecipeSchema = new mongoose.Schema({
 // RecipeSchema.statics.list = function(finding, skipping, limiting, sorting) {
 //   const defaultFind = { ratingCount: { $gte: 1000}}
 //   const defaultSelect = [
-//     'author', 
-//     'titleMain', 
-//     'titleSub', 
-//     'cookTimeMins', 
-//     'servings', 
-//     'calories', 
-//     'thumbnailUrl', 
-//     'ratingCount', 
+//     'author',
+//     'titleMain',
+//     'titleSub',
+//     'cookTimeMins',
+//     'servings',
+//     'calories',
+//     'thumbnailUrl',
+//     'ratingCount',
 //     'ratingValue',
 //     'createdAt'
 //   ]
@@ -96,38 +96,38 @@ const RecipeSchema = new mongoose.Schema({
 //     .sort([...defaultSort]);
 // }
 
-RecipeSchema.statics.list = async function(matching, skipping, limiting, sorting) {
+RecipeSchema.statics.list = async function (matching, skipping, limiting, sorting) {
   const defaultProject = {
-    'author': 1,
-    'titleMain': 1,
-    'titleSub': 1,
-    'cookTimeMins': 1,
-    'servings': 1,
-    'calories': 1,
-    'description' : 1,
-    'thumbnailUrl': 1,
-    'ingredientsImageUrl': 1,
-    'ingredients': 1,
-    'instructions' : 1,
-    'ratingCount': 1,
-    'ratingValue': 1,
-    'cookedCount': 1,
-    'isFeatured': 1,
-    'createdAt': 1,
-  }
-  
+    author: 1,
+    titleMain: 1,
+    titleSub: 1,
+    cookTimeMins: 1,
+    servings: 1,
+    calories: 1,
+    description: 1,
+    thumbnailUrl: 1,
+    ingredientsImageUrl: 1,
+    ingredients: 1,
+    instructions: 1,
+    ratingCount: 1,
+    ratingValue: 1,
+    cookedCount: 1,
+    isFeatured: 1,
+    createdAt: 1,
+  };
+
   const recipes = await this.aggregate([
-    { $match: { ...matching }},
-    { $project: { ...defaultProject, ratingScore: { $multiply: ['$ratingCount', '$ratingValue']} }},
+    { $match: { ...matching } },
+    { $project: { ...defaultProject, ratingScore: { $multiply: ['$ratingCount', '$ratingValue'] } } },
     // { $project: { ratingScore: { $multiply: ['$ratingCount', '$ratingValue']} }},
-    { $sort: { ...sorting, ratingScore: -1 }},
+    { $sort: { ...sorting, ratingScore: -1 } },
     { $skip: skipping || 0 },
     { $limit: limiting || 15 },
-    { $project: { ratingScore: 0 }},
-    // { $group:{ _id: null, ids:{ $push:"$_id" }}}    
-  ])
+    { $project: { ratingScore: 0 } },
+    // { $group:{ _id: null, ids:{ $push:"$_id" }}}
+  ]);
 
   return recipes;
-}
+};
 
 module.exports = mongoose.model('Recipe', RecipeSchema);

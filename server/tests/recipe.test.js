@@ -1,6 +1,10 @@
 const httpStatus = require('http-status');
 const app = require('../app');
-// const { getNextSequence, clearDatabase } = require('../utils/mongoose.utils');
+const { clearDatabase } = require('../utils/mongoose.utils');
+
+after(async () => {
+  await clearDatabase();
+});
 
 describe('## Recipe APIs', () => {
   let recipe;
@@ -18,7 +22,7 @@ describe('## Recipe APIs', () => {
 
   describe('# GET /api/recipes/:recipeId', () => {
     it('should get recipe details', async () => {
-      const recipeId = '5d70519173112953ec462688'
+      const recipeId = '5d70519173112953ec462688';
       const response = await request(app).get(`/api/recipes/${recipeId}`);
 
       expect(response.status).to.equal(httpStatus.OK);
@@ -52,7 +56,7 @@ describe('## Recipe APIs', () => {
       // expect(response.body).to.have.lengthOf(1);
     });
   });
-  
+
   describe('# GET /api/recipes/new', () => {
     it('should get all new recipes', async () => {
       const response = await request(app).get('/api/recipes/new');
@@ -61,7 +65,7 @@ describe('## Recipe APIs', () => {
       // expect(response.body).to.have.lengthOf(1);
     });
   });
-  
+
   describe('# GET /api/recipes/most-liked', () => {
     it('should get all most liked recipes', async () => {
       const response = await request(app).get('/api/recipes/most-liked');
@@ -70,7 +74,7 @@ describe('## Recipe APIs', () => {
       // expect(response.body).to.have.lengthOf(1);
     });
   });
-  
+
   describe('# GET /api/recipes/featured', () => {
     it('should get all featured recipes', async () => {
       const response = await request(app).get('/api/recipes/featured');
@@ -88,10 +92,10 @@ describe('## Recipe APIs', () => {
 
   describe('# GET /api/recipes/search', () => {
     it('should search for recipes', async () => {
-      const query = 'steak'
+      const query = 'steak';
       const response = await request(app).get(`/api/recipes/search?${query}`);
 
       expect(response.status).to.equal(httpStatus.OK);
     });
-  });  
+  });
 });

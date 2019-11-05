@@ -1,29 +1,30 @@
 const express = require('express');
 const recipeController = require('../controllers/recipe.controller');
+const { checkCache } = require('../utils/redis.utils');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-  .get(recipeController.list)
+  .get(checkCache, recipeController.list)
   .post(recipeController.create);
 
 router.route('/featured')
-  .get(recipeController.listFeatured)
+  .get(checkCache, recipeController.listFeatured);
 
 router.route('/popular')
-  .get(recipeController.listPopular)
-  
+  .get(checkCache, recipeController.listPopular);
+
 router.route('/new')
-  .get(recipeController.listNew)
+  .get(checkCache, recipeController.listNew);
 
 router.route('/most-liked')
-  .get(recipeController.listMostLiked)
+  .get(checkCache, recipeController.listMostLiked);
 
 router.route('/search')
-  .get(recipeController.search)  
+  .get(checkCache, recipeController.search);
 
 router.route('/:recipeId')
-  .get(recipeController.get)
+  .get(recipeController.get);
 
 // router.route('/scrape/:mainIngredient?/:cuisine?/:season?')
 //   .get(recipeController.list)

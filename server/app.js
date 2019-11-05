@@ -1,72 +1,48 @@
 /* eslint no-console: 0 */
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const cors = require('cors');
+const morgan = require('morgan');
+const helmet = require('helmet');
+const compress = require('compression');
 const bodyParser = require('body-parser');
-
+const expressWinston = require('express-winston');
+const winstonInstance = require('./utils/winston.utils');
 const routes = require('../server/routes/index.route');
-const APIError = require('./utils/APIError.utils');
-
-const env = process.env.NODE_ENV || 'development';
-const config = require('./config/config')[env]; // eslint-disable-line import/no-dynamic-require
-const { scrapeCookbook } = require('./utils/recipe.utils');
+const errorHandler = require('./utils/error-handler.utils');
+const config = require('./config/config');
+// const { scrapeCookbook } = require('./utils/recipe.utils');
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// MIDDLEWARE
+if (config.ENV === 'developmet') app.use(morgan);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('trust proxy', true);
+app.use(compress());
+app.use(helmet());
+app.use(cors());
 
-// Mount all routes on api
-app.use('/api', routes);
-
-// If error is not an instanceOf APIError, convert it.
-app.use((err, req, res, next) => {
-  if (!(err instanceof APIError)) {
-    const apiError = new APIError(err.message, err.status);
-    return next(apiError);
-  }
-
-  return next(err);
-});
-
-// Catch 404 and forward to Error Handler
-app.use((req, res, next) => {
-  const err = new APIError('API not found', httpStatus.NOT_FOUND);
-  return next(err);
-});
-
-// Error Handler
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-  res.status(err.status || 500).json({
-    name: err.name,
-    message: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : {},
-  });
-});
-
-// Mongoose Connect to heroku database
-if (process.env.MONGODB_URI) {
-  mongoose
-    .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
-    .catch((error) => console.log(error));
-} else {
-// Mongoose Connect to local database
-  mongoose
-    .connect(`mongodb://127.0.0.1:27017/${config.database}`, { useNewUrlParser: true })
-    .catch((error) => console.log(error));
+// ENABLE DETAILED API LOGGING IN DEV ENV
+if (config.ENV === 'development') {
+  app.use(expressWinston.logger({
+    winstonInstance,
+    meta: true,
+    msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
+    colorStatus: true,
+  }));
 }
 
-mongoose.set('useCreateIndex', true);
-mongoose.set('debug', true);
+// MOUNT ALL ROUTES ON API
+app.use('/api', routes);
 
-mongoose.connection.on('error', (err) => {
-  console.log(err);
-});
+// IF ERROR IS NOT AN INSTANCE OF APIERROR, CONVERT IT
+app.use(errorHandler.convertToAPIError);
+// CATCH 404 AND FORWARD TO ERROR HANDLER
+app.use(errorHandler.httpError(httpStatus.NOT_FOUND));
+// ERROR HANDLER
+app.use(errorHandler.log);
 
 // scrapeCookbook();
 
