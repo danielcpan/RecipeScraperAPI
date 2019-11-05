@@ -12,7 +12,7 @@ const InstructionSchema = new mongoose.Schema({
   },
   stepImage: {
     type: String,
-  }
+  },
 });
 
 module.exports = InstructionSchema;

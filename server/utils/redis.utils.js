@@ -38,11 +38,8 @@ const addToCache = (req, expirationTime = 300, value) => {
   if (config.ENV === 'test') return;
 
   const key = buildKey(req);
-  const start = new Date();
   if (config.ENV === 'development') {
     redis.setex(key, 15, JSON.stringify(value));
-    const end = new Date();
-    console.log('stringify duration:', end - start);
   } else {
     redis.setex(key, expirationTime, JSON.stringify(value));
   }
@@ -55,9 +52,3 @@ module.exports = {
   addToCache,
   redis,
 };
-
-
-// start = new Date();
-// JSON.stringify(recipe);
-// end = new Date();
-// console.log(end - start);
