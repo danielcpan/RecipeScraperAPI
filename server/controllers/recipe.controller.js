@@ -22,7 +22,6 @@ module.exports = {
       //   newRecipe = new Recipe(recipe);
       //   await newRecipe.save();
       // }
-
       addToCache(req, 300, recipe);
       return res.json(recipe);
     } catch (err) {

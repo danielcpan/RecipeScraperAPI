@@ -7,9 +7,17 @@ after(async () => {
 });
 
 describe('## Recipe APIs', () => {
-  let recipe;
+  // let recipe;
 
   before(async () => {
+    // const validUserCredentials = {
+    //   email: 'foobar@gmail.com',
+    //   password: 'foobar123',
+    // };
+
+    // const admin1Response = await request(app)
+    //   .post('/api/auth/register')
+    //   .send(validAdminCredentials);
     // await clearDatabase();
 
     // const data = {
